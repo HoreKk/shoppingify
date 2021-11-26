@@ -4,7 +4,8 @@ import { defineNuxtPlugin } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(Toast, {
-    position: 'bottom-right',
+    position: 'bottom-center',
+    timeout: 2500,
     toastDefaults: {
       [TYPE.SUCCESS]: {
         toastClassName: '!bg-primary',

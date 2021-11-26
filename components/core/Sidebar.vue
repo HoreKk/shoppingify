@@ -85,7 +85,8 @@
     <template v-if="tabSidebar === 'selectedItem'">
       <div class="flex justify-between items-center w-full mt-6">
         <div class="flex items-center text-primary cursor-pointer" @click="handleCloseSelectedItem">
-          <div class="i-mdi-arrow-left-thin mr-1" />back
+          <div class="i-mdi-arrow-left-thin mr-1" />
+          <span>back</span>
         </div>
         <div class="flex i-mdi-pencil cursor-pointer" @click="hanleEditItem" />
       </div>
@@ -162,25 +163,32 @@ const handleCleanFormItem = () => {
 }
 
 const handleSubmit = async() => {
+  const typeSubmit = sidebarStore.getSelectedItem ? 'update' : 'create'
+
   if (Array.isArray(newCategory.value)) newCategory.value = newCategory.value[0]
 
   let categoryById = categories.value.find(category => category.name === newCategory.value)
+  try {
+    if (!categoryById) {
+      const result = await $fetch('/api/category/create', { params: { name: newCategory.value } })
+      await refreshCategories()
+      categoryById = result
+    }
 
-  if (!categoryById) {
-    const result = await $fetch('/api/category/create', { params: { name: newCategory.value } })
-    await refreshCategories()
-    categoryById = result
+    category.value = categoryById._id
+
+    const itemFormated = await $fetch(`/api/item/${typeSubmit}`, { params: formData })
+
+    if (itemFormated._id === sidebarStore.getSelectedItem?._id)
+      await sidebarStore.$patch(state => state.selectedItem = itemFormated)
+    await sidebarStore.$state.refreshListItems()
+
+    handleCleanFormItem()
+    toast.success(`Item successfully ${typeSubmit}d`)
   }
-
-  category.value = categoryById._id
-
-  const itemFormated = await $fetch(`/api/item/${sidebarStore.getSelectedItem ? 'update' : 'create'}`, { params: formData })
-
-  if (itemFormated._id === sidebarStore.getSelectedItem?._id)
-    await sidebarStore.$patch(state => state.selectedItem = itemFormated)
-  await sidebarStore.$state.refreshListItems()
-
-  handleCleanFormItem()
+  catch (e) {
+    toast.error(`Error while ${typeSubmit === 'update' ? 'updating' : 'creating'} item`)
+  }
 }
 
 const hanleEditItem = () => {
@@ -195,16 +203,15 @@ const handleCloseSelectedItem = () => {
 }
 
 const handleDeleteSelectedItem = async() => {
-  const itemName = sidebarStore.getSelectedItem.name
   try {
     await $fetch('/api/item/delete', { params: sidebarStore.getSelectedItem })
     await sidebarStore.refreshListItems()
     sidebarStore.$patch({ selectedItem: null })
     tabSidebar.value = 'default'
-    toast.success(`${itemName} item successfully deleted`)
+    toast.success('Item successfully deleted')
   }
   catch (e) {
-    toast.error(`Error in delete of ${itemName} item`)
+    toast.error('Error in delete of item')
   }
 }
 

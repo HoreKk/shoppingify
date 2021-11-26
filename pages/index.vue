@@ -7,6 +7,7 @@
       </h1>
       <FormKit
         v-model="searchItem"
+        :delay="250"
         autocomplete="off"
         type="search"
         placeholder="search item"
@@ -39,12 +40,13 @@ import { useSidebarStore } from '~/stores/sidebarStore'
 const sidebarStore = useSidebarStore()
 const searchItem = ref('')
 
-const { data: itemsByCategories, refresh: refreshItems } = await useAsyncData('itemList',
+const { data: itemsByCategories, refresh: refreshItems } = await useAsyncData(
+  'itemList',
   () => $fetch('/api/item/list', { params: { name: searchItem.value } }),
 )
 
 sidebarStore.$patch(state => state.refreshListItems = refreshItems)
 
-watch(useDebounce(searchItem, 200), async() => await refreshItems())
+watch(searchItem, async() => await refreshItems())
 
 </script>
