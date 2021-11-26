@@ -123,14 +123,16 @@ const tabSidebar = ref('default')
 const showSelectCategory = ref(false)
 const newCategory = ref('')
 
-const formDataInital = { _id: undefined, name: '', note: null, image: null, category: null }
+const formDataInital = { _id: null, name: '', note: null, image: null, category: null }
 
 const formData = reactive({ ...formDataInital })
 
 const { name, note, image, category } = toRefs(formData)
 
 const handleSubmit = async() => {
-  const typeOfSubmit = formData._id ? 'update' : 'create'
+  showSelectCategory.value = false
+
+  const typeOfSubmit = formData._id !== null ? 'update' : 'create'
 
   if (Array.isArray(newCategory.value)) newCategory.value = newCategory.value[0]
 
@@ -146,14 +148,13 @@ const handleSubmit = async() => {
 
   const itemFormated = await $fetch(`/api/item/${typeOfSubmit}`, { params: formData })
 
-  if (itemFormated._id === sidebarStore.getSelectedItem._id)
+  if (itemFormated._id === sidebarStore.getSelectedItem?._id)
     await sidebarStore.$patch(state => state.selectedItem = itemFormated)
   await sidebarStore.$state.refreshListItems()
 
   Object.assign(formData, formDataInital)
   newCategory.value = ''
-  showSelectCategory.value = false
-  tabSidebar.value = typeOfSubmit ? 'selectedItem' : 'default'
+  tabSidebar.value = typeOfSubmit === 'update' ? 'selectedItem' : 'default'
 }
 
 const hanleEditItem = () => {
