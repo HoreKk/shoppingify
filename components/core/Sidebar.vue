@@ -64,22 +64,36 @@
         @focusout="showSelectCategory = false"
       />
       <div class="flex justify-center w-full">
-        <FormKit type="button" outer-class="pt-3" input-class="!border-transparent !rounded-xl !px-5 !py-4" @click="tabSidebar = 'default'">
+        <FormKit
+          type="button"
+          outer-class="pt-3"
+          input-class="!border-transparent !rounded-xl !px-5 !py-4"
+          @click="handleCleanFormItem"
+        >
           cancel
         </FormKit>
-        <FormKit type="submit" outer-class="pt-3 ml-4" input-class="!text-white !bg-primary !border-transparent !rounded-xl !px-5 !py-4" @click="handleSubmit">
+        <FormKit
+          type="submit"
+          outer-class="pt-3 ml-4"
+          input-class="!text-white !bg-primary !border-transparent !rounded-xl !px-5 !py-4"
+          @click="handleSubmit"
+        >
           Save
         </FormKit>
       </div>
     </template>
     <template v-if="tabSidebar === 'selectedItem'">
       <div class="flex justify-between items-center w-full mt-6">
-        <div class="flex items-center text-primary cursor-pointer" @click="tabSidebar = 'default'">
+        <div class="flex items-center text-primary cursor-pointer" @click="handleCloseSelectedItem">
           <div class="i-mdi-arrow-left-thin mr-1" />back
         </div>
         <div class="flex i-mdi-pencil cursor-pointer" @click="hanleEditItem" />
       </div>
-      <img v-if="sidebarStore.selectedItem.image" class="h-[250px] w-full mt-10 object-cover rounded-3xl" :src="sidebarStore.selectedItem.image" />
+      <img
+        v-if="sidebarStore.selectedItem.image"
+        class="h-[250px] w-full mt-10 object-cover rounded-3xl"
+        :src="sidebarStore.selectedItem.image"
+      />
       <div v-else class="h-[250px] w-full mt-10 rounded-2xl bg-gray-400" />
       <div class="flex flex-col mt-8">
         <span class="text-disabled">name</span>
@@ -100,10 +114,19 @@
         </span>
       </div>
       <div class="flex justify-center w-full mt-4">
-        <FormKit type="button" outer-class="pt-3" input-class="!border-transparent !font-semibold !rounded-xl !px-5 !py-4" @click="handleDeleteSelectedItem">
+        <FormKit
+          type="button"
+          outer-class="pt-3"
+          input-class="!border-transparent !font-semibold !rounded-xl !px-5 !py-4"
+          @click="handleDeleteSelectedItem"
+        >
           delete
         </FormKit>
-        <FormKit type="submit" outer-class="pt-3 ml-4" input-class="!text-white !font-semibold !bg-primary !border-transparent !rounded-xl !px-5 !py-4">
+        <FormKit
+          type="submit"
+          outer-class="pt-3 ml-4"
+          input-class="!text-white !font-semibold !bg-primary !border-transparent !rounded-xl !px-5 !py-4"
+        >
           Add to list
         </FormKit>
       </div>
@@ -131,11 +154,14 @@ const formData = reactive({ ...formDataInital })
 
 const { name, note, image, category } = toRefs(formData)
 
-const handleSubmit = async() => {
+const handleCleanFormItem = () => {
+  Object.assign(formData, formDataInital)
   showSelectCategory.value = false
+  newCategory.value = ''
+  tabSidebar.value = sidebarStore.getSelectedItem ? 'selectedItem' : 'default'
+}
 
-  const typeOfSubmit = formData._id !== null ? 'update' : 'create'
-
+const handleSubmit = async() => {
   if (Array.isArray(newCategory.value)) newCategory.value = newCategory.value[0]
 
   let categoryById = categories.value.find(category => category.name === newCategory.value)
@@ -148,21 +174,24 @@ const handleSubmit = async() => {
 
   category.value = categoryById._id
 
-  const itemFormated = await $fetch(`/api/item/${typeOfSubmit}`, { params: formData })
+  const itemFormated = await $fetch(`/api/item/${sidebarStore.getSelectedItem ? 'update' : 'create'}`, { params: formData })
 
   if (itemFormated._id === sidebarStore.getSelectedItem?._id)
     await sidebarStore.$patch(state => state.selectedItem = itemFormated)
   await sidebarStore.$state.refreshListItems()
 
-  Object.assign(formData, formDataInital)
-  newCategory.value = ''
-  tabSidebar.value = typeOfSubmit === 'update' ? 'selectedItem' : 'default'
+  handleCleanFormItem()
 }
 
 const hanleEditItem = () => {
   Object.assign(formData, { ...sidebarStore.getSelectedItem, category: sidebarStore.getSelectedItem.category.name })
   newCategory.value = formData.category
   tabSidebar.value = 'newItem'
+}
+
+const handleCloseSelectedItem = () => {
+  sidebarStore.$patch({ selectedItem: null })
+  tabSidebar.value = 'default'
 }
 
 const handleDeleteSelectedItem = async() => {
@@ -182,6 +211,7 @@ const handleDeleteSelectedItem = async() => {
 sidebarStore.$subscribe((mutation) => {
   if (mutation.type === 'patch object' && Object.keys(mutation.payload)[0] === 'selectedItem')
     mutation.payload.selectedItem ? tabSidebar.value = 'selectedItem' : tabSidebar.value = 'default'
+  handleCleanFormItem()
 })
 
 </script>
