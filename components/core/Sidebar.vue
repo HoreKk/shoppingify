@@ -100,8 +100,8 @@
         </span>
       </div>
       <div class="flex justify-center w-full mt-4">
-        <FormKit type="button" outer-class="pt-3" input-class="!border-transparent !font-semibold !rounded-xl !px-5 !py-4" @click="sidebarStore.$patch({ selectedItem: null })">
-          cancel
+        <FormKit type="button" outer-class="pt-3" input-class="!border-transparent !font-semibold !rounded-xl !px-5 !py-4" @click="handleDeleteSelectedItem">
+          delete
         </FormKit>
         <FormKit type="submit" outer-class="pt-3 ml-4" input-class="!text-white !font-semibold !bg-primary !border-transparent !rounded-xl !px-5 !py-4">
           Add to list
@@ -113,8 +113,10 @@
 
 <script setup lang="ts">
 
+import { useToast } from 'vue-toastification'
 import { useSidebarStore } from '~/stores/sidebarStore'
 
+const toast = useToast()
 const sidebarStore = useSidebarStore()
 
 const { data: categories, refresh: refreshCategories } = await useFetch('/api/category/list')
@@ -161,6 +163,20 @@ const hanleEditItem = () => {
   Object.assign(formData, { ...sidebarStore.getSelectedItem, category: sidebarStore.getSelectedItem.category.name })
   newCategory.value = formData.category
   tabSidebar.value = 'newItem'
+}
+
+const handleDeleteSelectedItem = async() => {
+  const itemName = sidebarStore.getSelectedItem.name
+  try {
+    await $fetch('/api/item/delete', { params: sidebarStore.getSelectedItem })
+    await sidebarStore.refreshListItems()
+    sidebarStore.$patch({ selectedItem: null })
+    tabSidebar.value = 'default'
+    toast.success(`${itemName} item successfully deleted`)
+  }
+  catch (e) {
+    toast.error(`Error in delete of ${itemName} item`)
+  }
 }
 
 sidebarStore.$subscribe((mutation) => {

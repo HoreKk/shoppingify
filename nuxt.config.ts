@@ -23,6 +23,10 @@ export default defineNuxtConfig({
     uno: true, // enabled `@unocss/preset-uno`
     icons: { scale: 1.2 }, // enabled `@unocss/preset-icons`
     attributify: true, // enabled `@unocss/preset-attributify`,
+    // shortcuts: [
+    //   { 'Vue-Toastification__toast--success': '!bg-primary' },
+    //   { 'btn-red': 'bg-primary p-15 text-card' },
+    // ],
     theme: {
       colors: {
         primary: '#F9A109',
