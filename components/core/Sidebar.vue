@@ -1,14 +1,45 @@
 <template>
   <div :class="{ '!bg-white !items-start px-10': tabSidebar !== 'default' }">
     <template v-if="tabSidebar === 'default'">
-      <div class="bg-card flex mt-12 px-4 rounded-3xl w-5/6">
+      <div class="bg-card flex mt-12 px-4 mx-10 rounded-3xl">
         <img src="/source.svg" />
         <div class="flex flex-col pl-4 pt-8">
           <h4 class="text-white text-xl text-medium mb-3">
             Didn’t find what you need ?
           </h4>
-          <FormkitButton text="Add item" type="button" input-class="btn btn-white" :handle-click="hanleEditItem" />
+          <FormkitButton text="Add item" input-class="btn btn-white" :handle-click="hanleEditItem" />
         </div>
+      </div>
+      <div class="flex justify-center items-center w-full h-full px-10">
+        <template v-if="sidebarStore.isListEmpty">
+          <h3>No items</h3>
+        </template>
+        <template v-else>
+          <div class="flex flex-col justify-start w-full h-full mt-20">
+            <div class="flex justify-start">
+              <h2 class="text-2xl font-semibold">
+                {{ list.name }}
+              </h2>
+            </div>
+            <div v-for="cat in getItemListByCats" :key="cat.name">
+              <h4 class="text-[#828282] mt-2">
+                {{ cat.name }}
+              </h4>
+              <div v-for="item in cat.items" :key="item._id">
+                {{ item.name }}
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+      <div class="flex justify-center items-center py-6 bg-white w-full">
+        <FormKit
+          :disabled="sidebarStore.isListEmpty"
+          placeholder="Enter a name"
+          outer-class="!mb-0 -mr-6 w-4/6"
+          inner-class="!py-1 !border-2  border-primary !rounded-xl disabled:!border-red-300"
+        />
+        <FormkitButton text="Save" outer-class="!mb-0" input-class="btn btn-primary" :disabled="sidebarStore.isListEmpty" />
       </div>
     </template>
     <template v-if="tabSidebar === 'newItem'">
@@ -62,7 +93,7 @@
         @focusout="showSelectCategory = false"
       />
       <div class="flex justify-center w-full mt-3">
-        <FormkitButton text="cancel" type="button" input-class="btn" :handle-click="handleCleanFormItem" />
+        <FormkitButton text="cancel" input-class="btn" :handle-click="handleCleanFormItem" />
         <FormkitButton text="Save" type="submit" outer-class="ml-4" input-class="btn btn-primary" :handle-click="handleSubmit" />
       </div>
     </template>
@@ -99,8 +130,13 @@
         </span>
       </div>
       <div class="flex justify-center w-full mt-7">
-        <FormkitButton text="delete" type="button" input-class="btn" :handle-click="handleDeleteSelectedItem" />
-        <FormkitButton text="Add to list" type="submit" outer-class="ml-4" input-class="btn btn-primary" />
+        <FormkitButton text="delete" input-class="btn" :handle-click="handleDeleteSelectedItem" />
+        <FormkitButton
+          :text="isItemInList(selectedItem._id) ? 'Remove from list' : 'Add to list'"
+          outer-class="ml-4"
+          input-class="btn btn-primary"
+          :handle-click="handleAddItemToList"
+        />
       </div>
     </template>
   </div>
@@ -109,10 +145,13 @@
 <script setup lang="ts">
 
 import { useToast } from 'vue-toastification'
+import { storeToRefs } from 'pinia'
 import { useSidebarStore } from '~/stores/sidebarStore'
 
 const toast = useToast()
 const sidebarStore = useSidebarStore()
+const { isItemInList, addItemToList, removeItemFromList } = sidebarStore
+const { selectedItem, list, getItemListByCats } = storeToRefs(sidebarStore)
 
 const { data: categories, refresh: refreshCategories } = await useFetch('/api/category/list')
 
@@ -130,11 +169,11 @@ const handleCleanFormItem = () => {
   Object.assign(formData, formDataInital)
   showSelectCategory.value = false
   newCategory.value = ''
-  tabSidebar.value = sidebarStore.getSelectedItem ? 'selectedItem' : 'default'
+  tabSidebar.value = selectedItem.value ? 'selectedItem' : 'default'
 }
 
 const handleSubmit = async() => {
-  const typeSubmit = sidebarStore.getSelectedItem ? 'update' : 'create'
+  const typeSubmit = selectedItem.value ? 'update' : 'create'
 
   if (Array.isArray(newCategory.value)) newCategory.value = newCategory.value[0]
 
@@ -150,9 +189,9 @@ const handleSubmit = async() => {
 
     const itemFormated = await $fetch(`/api/item/${typeSubmit}`, { params: formData })
 
-    if (itemFormated._id === sidebarStore.getSelectedItem?._id)
+    if (itemFormated._id === selectedItem.value?._id)
       await sidebarStore.$patch(state => state.selectedItem = itemFormated)
-    await sidebarStore.$state.refreshListItems()
+    await sidebarStore.$state.refreshItems()
 
     handleCleanFormItem()
     toast.success(`Item successfully ${typeSubmit}d`)
@@ -163,8 +202,8 @@ const handleSubmit = async() => {
 }
 
 const hanleEditItem = () => {
-  if (sidebarStore.getSelectedItem) {
-    Object.assign(formData, { ...sidebarStore.getSelectedItem, category: sidebarStore.getSelectedItem.category.name })
+  if (selectedItem.value) {
+    Object.assign(formData, { ...selectedItem.value, category: selectedItem.value.category.name })
     newCategory.value = formData.category
   }
   tabSidebar.value = 'newItem'
@@ -177,8 +216,8 @@ const handleCloseSelectedItem = () => {
 
 const handleDeleteSelectedItem = async() => {
   try {
-    await $fetch('/api/item/delete', { params: sidebarStore.getSelectedItem })
-    await sidebarStore.refreshListItems()
+    await $fetch('/api/item/delete', { params: selectedItem.value })
+    await sidebarStore.refreshItems()
     sidebarStore.$patch({ selectedItem: null })
     tabSidebar.value = 'default'
     toast.success('Item successfully deleted')
@@ -186,6 +225,12 @@ const handleDeleteSelectedItem = async() => {
   catch (e) {
     toast.error('Error in delete of item')
   }
+}
+
+const handleAddItemToList = () => {
+  const item = selectedItem.value
+  isItemInList(item._id) ? removeItemFromList(item) : addItemToList(item)
+  handleCloseSelectedItem()
 }
 
 sidebarStore.$subscribe((mutation) => {

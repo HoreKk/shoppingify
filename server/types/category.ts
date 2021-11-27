@@ -3,7 +3,7 @@ import type { Document, Model } from 'mongoose'
 
 const { Schema, model } = mongoose
 
-interface ICategory extends Document {
+export interface ICategory extends Document {
   name: string
   createdAt: Date
   updatedAt: Date

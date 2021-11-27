@@ -3,7 +3,7 @@ import type { Document, Model } from 'mongoose'
 
 const { Schema, model } = mongoose
 
-interface IItem extends Document {
+export interface IItem extends Document {
   name: string
   note?: string | null
   image?: string | null

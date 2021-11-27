@@ -5,9 +5,10 @@ const { Schema, model } = mongoose
 
 interface IList extends Document {
   name: string
+  state: string
   items: [
     {
-      item: string
+      item_id: string
       count: number
       checked: boolean
     }
@@ -18,9 +19,10 @@ interface IList extends Document {
 
 const ListSchema = new Schema({
   name: { type: String, required: true },
+  state: { type: String, required: true },
   items: [
     {
-      item: { type: Schema.Types.ObjectId, required: true, ref: 'Item' },
+      item_id: { type: Schema.Types.ObjectId, required: true, ref: 'Item' },
       count: { type: Number, required: true },
       checked: { type: Boolean, required: true },
     },

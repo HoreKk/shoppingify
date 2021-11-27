@@ -24,8 +24,8 @@ export default defineNuxtConfig({
     icons: { scale: 1.2 }, // enabled `@unocss/preset-icons`
     attributify: true, // enabled `@unocss/preset-attributify`,
     shortcuts: [
-      { btn: '!font-semibold !border-transparent !rounded-xl !px-5 !py-4' },
-      [/^btn-(.*)$/, ([, c]) => `!bg-${c}`],
+      [/^btn-(.*)$/, ([, c]) => `!bg-${c} ${c === 'primary' ? '!text-white' : ''}`],
+      { btn: '!font-semibold !border-transparent !rounded-xl !px-5 !py-4 disabled:!bg-disabled disabled:!text-white' },
     ],
     theme: {
       colors: {
