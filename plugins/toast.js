@@ -8,7 +8,12 @@ export default defineNuxtPlugin((nuxtApp) => {
     timeout: 2500,
     toastDefaults: {
       [TYPE.SUCCESS]: {
-        toastClassName: '!bg-primary',
+        toastClassName: 'btn-primary',
+        icon: false,
+        hideProgressBar: true,
+      },
+      [TYPE.ERROR]: {
+        toastClassName: 'btn-error',
         icon: false,
         hideProgressBar: true,
       },

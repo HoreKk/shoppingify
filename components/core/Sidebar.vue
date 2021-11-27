@@ -4,12 +4,10 @@
       <div class="bg-card flex mt-12 px-4 rounded-3xl w-5/6">
         <img src="/source.svg" />
         <div class="flex flex-col pl-4 pt-8">
-          <h4 class="text-white text-xl text-medium">
+          <h4 class="text-white text-xl text-medium mb-3">
             Didn’t find what you need ?
           </h4>
-          <FormKit type="button" outer-class="pt-3" input-class="!bg-white" @click="tabSidebar = 'newItem'">
-            Add item
-          </FormKit>
+          <FormkitButton text="Add item" type="button" input-class="btn btn-white" :handle-click="hanleEditItem" />
         </div>
       </div>
     </template>
@@ -63,23 +61,9 @@
         @focusin="showSelectCategory = true"
         @focusout="showSelectCategory = false"
       />
-      <div class="flex justify-center w-full">
-        <FormKit
-          type="button"
-          outer-class="pt-3"
-          input-class="!border-transparent !rounded-xl !px-5 !py-4"
-          @click="handleCleanFormItem"
-        >
-          cancel
-        </FormKit>
-        <FormKit
-          type="submit"
-          outer-class="pt-3 ml-4"
-          input-class="!text-white !bg-primary !border-transparent !rounded-xl !px-5 !py-4"
-          @click="handleSubmit"
-        >
-          Save
-        </FormKit>
+      <div class="flex justify-center w-full mt-3">
+        <FormkitButton text="cancel" type="button" input-class="btn" :handle-click="handleCleanFormItem" />
+        <FormkitButton text="Save" type="submit" outer-class="ml-4" input-class="btn btn-primary" :handle-click="handleSubmit" />
       </div>
     </template>
     <template v-if="tabSidebar === 'selectedItem'">
@@ -114,22 +98,9 @@
           {{ sidebarStore.selectedItem.note }}
         </span>
       </div>
-      <div class="flex justify-center w-full mt-4">
-        <FormKit
-          type="button"
-          outer-class="pt-3"
-          input-class="!border-transparent !font-semibold !rounded-xl !px-5 !py-4"
-          @click="handleDeleteSelectedItem"
-        >
-          delete
-        </FormKit>
-        <FormKit
-          type="submit"
-          outer-class="pt-3 ml-4"
-          input-class="!text-white !font-semibold !bg-primary !border-transparent !rounded-xl !px-5 !py-4"
-        >
-          Add to list
-        </FormKit>
+      <div class="flex justify-center w-full mt-7">
+        <FormkitButton text="delete" type="button" input-class="btn" :handle-click="handleDeleteSelectedItem" />
+        <FormkitButton text="Add to list" type="submit" outer-class="ml-4" input-class="btn btn-primary" />
       </div>
     </template>
   </div>
@@ -192,8 +163,10 @@ const handleSubmit = async() => {
 }
 
 const hanleEditItem = () => {
-  Object.assign(formData, { ...sidebarStore.getSelectedItem, category: sidebarStore.getSelectedItem.category.name })
-  newCategory.value = formData.category
+  if (sidebarStore.getSelectedItem) {
+    Object.assign(formData, { ...sidebarStore.getSelectedItem, category: sidebarStore.getSelectedItem.category.name })
+    newCategory.value = formData.category
+  }
   tabSidebar.value = 'newItem'
 }
 
