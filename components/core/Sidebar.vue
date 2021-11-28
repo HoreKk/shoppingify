@@ -26,7 +26,7 @@
                 {{ cat.name }}
               </h4>
               <div v-for="item in cat.items" :key="item._id" class="flex justify-between items-center mt-4">
-                <span class="text-lg font-medium line-clamp-1">{{ item.edit }}</span>
+                <span class="text-lg font-medium line-clamp-1">{{ item.name }}</span>
                 <div :class="{ 'bg-white': item.edit }" class="flex items-center rounded-xl h-full">
                   <template v-if="item.edit">
                     <FormkitButton
