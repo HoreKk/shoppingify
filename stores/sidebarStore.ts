@@ -11,6 +11,7 @@ interface ItemList extends Omit<IItem, 'category'> {
   category: ICategory
   count: number
   checked: boolean
+  edit: boolean
 }
 
 export const useSidebarStore = defineStore('sidebar', {
@@ -38,19 +39,40 @@ export const useSidebarStore = defineStore('sidebar', {
     },
   },
   actions: {
-    async addItemToList(item: IItem) {
+    addItemToList(item: ItemList) {
       if (this.isItemInList(item._id))
         return toast.error(`Item already added to the ${this.list.name}`)
 
-      this.list.items.push({ count: 1, checked: false, ...item })
+      this.list.items.push({ count: 1, checked: false, edit: false, ...item })
       toast.success(`Item successfully added to the ${this.list.name}`)
     },
-    removeItemFromList(deleteItem) {
+    removeItemFromList(deleteItem: ItemList) {
       if (!this.isItemInList(deleteItem._id))
         return toast.error(`Item can't be removed to the ${this.list.name}`)
 
       this.list.items = this.list.items.filter(item => item._id !== deleteItem._id)
-      toast.success(`Item successfully removed to the ${this.list.name}`)
+      toast.success(`Item successfully removed from the ${this.list.name}`)
+    },
+    changePropertyFromItemInList(itemToChange: ItemList, property: string, action: string = undefined) {
+      if (!this.isItemInList(itemToChange._id))
+        return toast.error(`Item not in the ${this.list.name}`)
+
+      this.list.items.forEach((item: ItemList) => {
+        if (item._id === itemToChange._id) {
+          switch (action) {
+            case 'add':
+              item[property]++
+              break
+            case 'minus':
+              if (item[property] === 1) return
+              item[property]--
+              break
+            default:
+              item[property] = !item[property]
+              break
+          }
+        }
+      })
     },
   },
 })

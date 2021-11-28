@@ -22,11 +22,31 @@
               </h2>
             </div>
             <div v-for="cat in getItemListByCats" :key="cat.name">
-              <h4 class="text-[#828282] mt-2">
+              <h4 class="text-[#828282] mt-8">
                 {{ cat.name }}
               </h4>
-              <div v-for="item in cat.items" :key="item._id">
-                {{ item.name }}
+              <div v-for="item in cat.items" :key="item._id" class="flex justify-between items-center mt-4">
+                <span class="text-lg font-medium line-clamp-1">{{ item.edit }}</span>
+                <div :class="{ 'bg-white': item.edit }" class="flex items-center rounded-xl h-full">
+                  <template v-if="item.edit">
+                    <FormkitButton
+                      icon="i-mdi-delete-outline"
+                      outer-class="!mb-0"
+                      input-class="btn btn-primary !px-2.5 !py-3.5 !text-sm"
+                      :handle-click="() => removeItemFromList(item)"
+                    />
+                    <button class="i-mdi-minus w-6 h-6 bg-primary mx-2" @click="changePropertyFromItemInList(item, 'count', 'minus')" />
+                  </template>
+                  <FormkitButton
+                    :text="`${item.count} pcs`"
+                    outer-class="!mb-0"
+                    input-class="btn-outline !text-sm"
+                    :handle-click="() => changePropertyFromItemInList(item, 'edit')"
+                  />
+                  <template v-if="item.edit">
+                    <button class="i-mdi-plus w-6 h-6 bg-primary mx-2" @click="changePropertyFromItemInList(item, 'count', 'add')" />
+                  </template>
+                </div>
               </div>
             </div>
           </div>
@@ -150,7 +170,7 @@ import { useSidebarStore } from '~/stores/sidebarStore'
 
 const toast = useToast()
 const sidebarStore = useSidebarStore()
-const { isItemInList, addItemToList, removeItemFromList } = sidebarStore
+const { isItemInList, addItemToList, removeItemFromList, changePropertyFromItemInList } = sidebarStore
 const { selectedItem, list, getItemListByCats } = storeToRefs(sidebarStore)
 
 const { data: categories, refresh: refreshCategories } = await useFetch('/api/category/list')

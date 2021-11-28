@@ -24,8 +24,11 @@ export default defineNuxtConfig({
     icons: { scale: 1.2 }, // enabled `@unocss/preset-icons`
     attributify: true, // enabled `@unocss/preset-attributify`,
     shortcuts: [
-      [/^btn-(.*)$/, ([, c]) => `!bg-${c} ${c === 'primary' ? '!text-white' : ''}`],
+      { 'btn-primary': '!bg-primary !text-white' },
+      { 'btn-white': '!bg-white' },
+      { 'btn-disabled': '!bg-disabled' },
       { btn: '!font-semibold !border-transparent !rounded-xl !px-5 !py-4 disabled:!bg-disabled disabled:!text-white' },
+      { 'btn-outline': '!text-primary !bg-transparent !border-2 !font-medium !border-primary !px-4.5 !py-1.75 !rounded-3xl' },
     ],
     theme: {
       colors: {

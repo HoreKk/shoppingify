@@ -6,14 +6,16 @@
     :disabled="disabled"
     @click="handleClick"
   >
-    {{ text }}
+    <div :class="icon" />
+    <span class="line-clamp-1">{{ text }}</span>
   </FormKit>
 </template>
 
 <script setup lang="ts">
 
 const props = defineProps({
-  text: { type: String, required: true },
+  text: { type: String, required: false },
+  icon: { type: String, required: false },
   type: { type: String, default: 'button', required: false },
   outerClass: { type: String, required: false },
   inputClass: { type: String, required: true },

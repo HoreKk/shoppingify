@@ -8,6 +8,7 @@
   "dependencies": {
     "@formkit/themes": "^1.0.0-alpha.1",
     "@formkit/vue": "^1.0.0-alpha.1",
+    "click-outside-vue3": "^4.0.1",
     "dotenv": "^10.0.0",
     "mongoose": "^6.0.13",
     "pinia": "^2.0.4",
@@ -19,15 +20,16 @@
     "@iconify-json/mdi": "^1.0.11",
     "@iconify-json/twemoji": "^1.0.2",
     "@pinia/nuxt": "^0.1.5",
-    "@unocss/nuxt": "^0.12.11",
+    "@unocss/nuxt": "^0.12.13",
     "@vueuse/core": "^6.9.2",
     "bcrypt": "^5.0.1",
     "eslint": "^8.3.0",
     "njwt": "^1.1.0",
     "nuxt3": "latest",
+    "patch-vue-directive-ssr": "^0.0.1",
     "sass": "^1.43.5",
     "typescript": "^4.5.2",
-    "unocss": "^0.12.11",
+    "unocss": "^0.12.13",
     "vue-toastification": "^2.0.0-rc.5"
   },
   "pnpm": {
