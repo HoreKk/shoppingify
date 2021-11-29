@@ -1,4 +1,3 @@
-import '@formkit/themes/dist/genesis/index.esm.css'
 import vClickOutside from 'click-outside-vue3'
 import { defineNuxtPlugin } from '#app'
 

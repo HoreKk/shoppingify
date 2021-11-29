@@ -54,6 +54,7 @@
       </div>
       <div class="flex justify-center items-center py-6 bg-white w-full">
         <FormKit
+          v-model="sidebarStore.list.name"
           :disabled="sidebarStore.isListEmpty"
           placeholder="Enter a name"
           outer-class="!mb-0 -mr-6 w-4/6"
