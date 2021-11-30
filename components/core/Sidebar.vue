@@ -58,7 +58,8 @@
           :disabled="isListEmpty"
           placeholder="Enter a name"
           outer-class="!mb-0 -mr-6 w-4/6"
-          inner-class="!py-1 !border-2  border-primary !rounded-xl disabled:!border-red-300 disabled:!border-2"
+          inner-class="!border-0 !py-2"
+          input-class="input-primary"
         />
         <FormkitButton text="Save" outer-class="!mb-0" input-class="btn btn-primary" :disabled="isListEmpty" />
       </div>

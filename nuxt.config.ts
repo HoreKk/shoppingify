@@ -29,6 +29,7 @@ export default defineNuxtConfig({
       { 'btn-disabled': '!bg-disabled' },
       { btn: '!font-semibold !border-transparent !rounded-xl !px-5 !py-4 disabled:!bg-disabled disabled:!text-white' },
       { 'btn-outline': '!text-primary !bg-transparent !border-2 !font-medium !border-primary !px-4.5 !py-1.75 !rounded-3xl' },
+      { 'input-primary': '!py-3.5 !border-2 !border-primary !rounded-xl disabled:!border-disabled' },
     ],
     theme: {
       colors: {
