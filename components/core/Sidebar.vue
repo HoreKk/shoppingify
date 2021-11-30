@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="flex justify-center items-center w-full h-full px-10">
-        <template v-if="sidebarStore.isListEmpty">
+        <template v-if="isListEmpty">
           <h3>No items</h3>
         </template>
         <template v-else>
@@ -54,13 +54,13 @@
       </div>
       <div class="flex justify-center items-center py-6 bg-white w-full">
         <FormKit
-          v-model="sidebarStore.list.name"
-          :disabled="sidebarStore.isListEmpty"
+          v-model="list.name"
+          :disabled="isListEmpty"
           placeholder="Enter a name"
           outer-class="!mb-0 -mr-6 w-4/6"
-          inner-class="!py-1 !border-2  border-primary !rounded-xl disabled:!border-red-300"
+          inner-class="!py-1 !border-2  border-primary !rounded-xl disabled:!border-red-300 disabled:!border-2"
         />
-        <FormkitButton text="Save" outer-class="!mb-0" input-class="btn btn-primary" :disabled="sidebarStore.isListEmpty" />
+        <FormkitButton text="Save" outer-class="!mb-0" input-class="btn btn-primary" :disabled="isListEmpty" />
       </div>
     </template>
     <template v-if="tabSidebar === 'newItem'">
@@ -122,28 +122,24 @@
         </div>
         <div class="flex i-mdi-pencil cursor-pointer" @click="hanleEditItem" />
       </div>
-      <img
-        v-if="sidebarStore.selectedItem.image"
-        class="h-[250px] w-full mt-10 object-cover rounded-3xl"
-        :src="sidebarStore.selectedItem.image"
-      />
+      <img v-if="selectedItem.image" class="h-[250px] w-full mt-10 object-cover rounded-3xl" :src="selectedItem.image" />
       <div v-else class="h-[250px] w-full mt-10 rounded-2xl bg-gray-400" />
       <div class="flex flex-col mt-8">
         <span class="text-disabled">name</span>
         <h4 class="text-2xl font-medium mt-2">
-          {{ sidebarStore.selectedItem.name }}
+          {{ selectedItem.name }}
         </h4>
       </div>
       <div class="flex flex-col mt-4">
         <span class="text-disabled">category</span>
         <span class="text-lg font-medium mt-2">
-          {{ sidebarStore.selectedItem.category.name }}
+          {{ selectedItem.category.name }}
         </span>
       </div>
-      <div v-if="sidebarStore.selectedItem.note" class="flex flex-col mt-4">
+      <div v-if="selectedItem.note" class="flex flex-col mt-4">
         <span class="text-disabled">note</span>
-        <span class="font-medium mt-2 line-clamp-6">
-          {{ sidebarStore.selectedItem.note }}
+        <span class="font-medium mt-2">
+          {{ selectedItem.note }}
         </span>
       </div>
       <div class="flex justify-center w-full mt-7">
@@ -168,7 +164,7 @@ import { useSidebarStore } from '~/stores/sidebarStore'
 const toast = useToast()
 const sidebarStore = useSidebarStore()
 const { isItemInList, addItemToList, removeItemFromList, changePropertyFromItemInList } = sidebarStore
-const { selectedItem, list, getItemListByCats } = storeToRefs(sidebarStore)
+const { selectedItem, list, getItemListByCats, isListEmpty, refreshItems } = storeToRefs(sidebarStore)
 
 const { data: categories, refresh: refreshCategories } = await useFetch('/api/category/list')
 
@@ -206,7 +202,7 @@ const handleSubmit = async() => {
 
     if (itemFormated._id === selectedItem.value?._id)
       await sidebarStore.$patch(state => state.selectedItem = itemFormated)
-    await sidebarStore.$state.refreshItems()
+    await refreshItems.value()
 
     handleCleanFormItem()
     toast.success(`Item successfully ${typeSubmit}d`)
@@ -232,7 +228,7 @@ const handleCloseSelectedItem = () => {
 const handleDeleteSelectedItem = async() => {
   try {
     await $fetch('/api/item/delete', { params: selectedItem.value })
-    await sidebarStore.refreshItems()
+    await refreshItems.value()
     sidebarStore.$patch({ selectedItem: null })
     tabSidebar.value = 'default'
     toast.success('Item successfully deleted')
@@ -250,7 +246,7 @@ const handleAddItemToList = () => {
 
 sidebarStore.$subscribe((mutation) => {
   if (mutation.type === 'patch object' && Object.keys(mutation.payload)[0] === 'selectedItem')
-    mutation.payload.selectedItem ? tabSidebar.value = 'selectedItem' : tabSidebar.value = 'default'
+    tabSidebar.value = mutation.payload.selectedItem ? 'selectedItem' : 'default'
   handleCleanFormItem()
 })
 

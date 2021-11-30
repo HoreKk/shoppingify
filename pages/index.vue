@@ -43,6 +43,7 @@ import { useSidebarStore } from '~/stores/sidebarStore'
 
 const sidebarStore = useSidebarStore()
 const { isItemInList, addItemToList, removeItemFromList } = sidebarStore
+
 const searchItem = ref('')
 
 const { data: itemsByCategories, refresh: refreshItems } = await useAsyncData(
@@ -50,12 +51,12 @@ const { data: itemsByCategories, refresh: refreshItems } = await useAsyncData(
   () => $fetch('/api/item/list', { params: { name: searchItem.value } }),
 )
 
+sidebarStore.$patch(state => state.refreshItems = refreshItems)
+
 const handleItemToList = async(item) => {
   isItemInList(item._id) ? removeItemFromList(item) : await addItemToList(item)
   sidebarStore.$patch({ selectedItem: null })
 }
-
-sidebarStore.$patch(state => state.refreshItems = refreshItems)
 
 watch(searchItem, async() => await refreshItems())
 
