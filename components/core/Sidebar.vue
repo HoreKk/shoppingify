@@ -100,18 +100,14 @@
         autocomplete="off"
         outer-class="w-full !border-[#BDBDBD]"
         inner-class="!rounded-lg"
-        @focusin="showSelectCategory = true"
       />
       <FormKit
-        v-if="showSelectCategory"
         v-model="newCategory"
         type="select"
         multiple
         :options="categories.map(category => category.name)"
         outer-class="w-full !border-[#BDBDBD]"
         inner-class="!rounded-lg"
-        @focusin="showSelectCategory = true"
-        @focusout="showSelectCategory = false"
       />
       <div class="flex justify-center w-full mt-3">
         <FormkitButton text="cancel" input-class="btn" :handle-click="handleCleanFormItem" />
@@ -177,7 +173,6 @@ const { selectedItem, list, getItemListByCats } = storeToRefs(sidebarStore)
 const { data: categories, refresh: refreshCategories } = await useFetch('/api/category/list')
 
 const tabSidebar = ref('default')
-const showSelectCategory = ref(false)
 const newCategory = ref('')
 
 const formDataInital = { _id: null, name: '', note: null, image: null, category: null }
@@ -188,7 +183,6 @@ const { name, note, image, category } = toRefs(formData)
 
 const handleCleanFormItem = () => {
   Object.assign(formData, formDataInital)
-  showSelectCategory.value = false
   newCategory.value = ''
   tabSidebar.value = selectedItem.value ? 'selectedItem' : 'default'
 }
