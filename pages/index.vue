@@ -22,6 +22,7 @@
         <div
           v-for="item in category.items"
           :key="item._id"
+          :class="{ 'border-primaryLighter': item._id === selectedItem?._id }"
           class="flex border-2 border-transparent justify-between w-2/9 p-3 bg-white rounded-xl cursor-pointer hover:border-primaryLighter"
           @click.capture="sidebarStore.$patch({ selectedItem: item })"
         >
@@ -39,10 +40,12 @@
 
 <script setup lang="ts">
 
+import { storeToRefs } from 'pinia'
 import { useSidebarStore } from '~/stores/sidebarStore'
 
 const sidebarStore = useSidebarStore()
 const { isItemInList, addItemToList, removeItemFromList } = sidebarStore
+const { selectedItem } = storeToRefs(sidebarStore)
 
 const searchItem = ref('')
 

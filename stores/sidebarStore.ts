@@ -19,7 +19,7 @@ export const useSidebarStore = defineStore('sidebar', {
     selectedItem: null,
     refreshItems: null,
     list: {
-      name: 'Shopping list',
+      name: null,
       state: 'edit',
       items: <ItemList[]>[],
     },

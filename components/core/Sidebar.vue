@@ -18,7 +18,7 @@
           <div class="flex flex-col justify-start w-full h-full mt-20">
             <div class="flex justify-start">
               <h2 class="text-2xl font-semibold">
-                {{ list.name }}
+                {{ list.name ?? 'Shopping List' }}
               </h2>
             </div>
             <div v-for="cat in getItemListByCats" :key="cat.name">
