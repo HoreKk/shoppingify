@@ -2,15 +2,7 @@ import { defineStore } from 'pinia'
 import { useToast } from 'vue-toastification'
 import { useGroupBy } from '~/composables/useGroupBy'
 
-import type { IItem } from '~/server/types/item'
-import type { ICategory } from '~/server/types/category'
-
-interface ItemList extends Omit<IItem, 'category'> {
-  category: ICategory
-  count: number
-  checked: boolean
-  edit: boolean
-}
+import type { ItemList } from '~/server/types/item'
 
 const toast = useToast()
 

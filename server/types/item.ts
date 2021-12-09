@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import type { Document, Model } from 'mongoose'
+import type { ICategory } from '~/server/types/category'
 
 const { Schema, model } = mongoose
 
@@ -10,6 +11,13 @@ export interface IItem extends Document {
   category?: string
   createdAt: Date
   updatedAt: Date
+}
+
+export interface ItemList extends Omit<IItem, 'category'> {
+  category: ICategory
+  count: number
+  checked: boolean
+  edit: boolean
 }
 
 const ItemSchema = new Schema({

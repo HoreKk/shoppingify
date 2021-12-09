@@ -10,49 +10,54 @@
           <FormkitButton text="Add item" input-class="btn btn-white" :handle-click="hanleEditItem" />
         </div>
       </div>
-      <div class="flex justify-center items-center w-full h-full px-10">
-        <template v-if="isListEmpty">
-          <h3>No items</h3>
-        </template>
-        <template v-else>
-          <div class="flex flex-col justify-start w-full h-full mt-20">
-            <div class="flex justify-start">
-              <h2 class="text-2xl font-semibold">
-                {{ list.name || 'Shopping List' }}
-              </h2>
-            </div>
-            <div v-for="cat in getItemListByCats" :key="cat.name">
-              <h4 class="text-[#828282] mt-8">
-                {{ cat.name }}
-              </h4>
-              <div v-for="item in cat.items" :key="item._id" class="flex justify-between items-center mt-4">
-                <span class="text-lg font-medium line-clamp-1">{{ item.name }}</span>
-                <div :class="{ 'bg-white': item.edit }" class="flex items-center rounded-xl h-full">
-                  <template v-if="item.edit">
+      <client-only>
+        <div class="flex justify-center items-center w-full h-full px-10">
+          <template v-if="isListEmpty">
+            <h3>No items</h3>
+          </template>
+          <template v-else>
+            <div class="flex flex-col justify-start w-full h-full mt-20">
+              <div class="flex justify-start">
+                <h2 class="text-2xl font-semibold">
+                  {{ list.name || 'Shopping List' }}
+                </h2>
+              </div>
+              <div v-for="cat in getItemListByCats" :key="cat.name">
+                <h4 class="text-[#828282] mt-8">
+                  {{ cat.name }}
+                </h4>
+                <div v-for="item in cat.items" :key="item._id" class="flex justify-between items-center mt-4">
+                  <span class="text-lg font-medium line-clamp-1">{{ item.name }}</span>
+                  <div :class="{ 'bg-white': item.edit }" class="flex items-center rounded-xl h-full">
+                    <template v-if="item.edit">
+                      <FormkitButton
+                        icon="i-mdi-delete-outline"
+                        outer-class="!mb-0"
+                        input-class="btn btn-primary !px-2.5 !py-3.5 !text-sm"
+                        :handle-click="() => removeItemFromList(item)"
+                      />
+                      <button class="i-mdi-minus w-6 h-6 bg-primary mx-2" @click="changePropertyFromItemInList(item, 'count', 'minus')" />
+                    </template>
                     <FormkitButton
-                      icon="i-mdi-delete-outline"
+                      :text="`${item.count} pcs`"
                       outer-class="!mb-0"
-                      input-class="btn btn-primary !px-2.5 !py-3.5 !text-sm"
-                      :handle-click="() => removeItemFromList(item)"
+                      input-class="btn-outline !text-sm"
+                      :handle-click="() => changePropertyFromItemInList(item, 'edit')"
                     />
-                    <button class="i-mdi-minus w-6 h-6 bg-primary mx-2" @click="changePropertyFromItemInList(item, 'count', 'minus')" />
-                  </template>
-                  <FormkitButton
-                    :text="`${item.count} pcs`"
-                    outer-class="!mb-0"
-                    input-class="btn-outline !text-sm"
-                    :handle-click="() => changePropertyFromItemInList(item, 'edit')"
-                  />
-                  <template v-if="item.edit">
-                    <button class="i-mdi-plus w-6 h-6 bg-primary mx-2" @click="changePropertyFromItemInList(item, 'count', 'add')" />
-                  </template>
+                    <template v-if="item.edit">
+                      <button class="i-mdi-plus w-6 h-6 bg-primary mx-2" @click="changePropertyFromItemInList(item, 'count', 'add')" />
+                    </template>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </template>
+        </div>
+        <template #fallback>
+          Loading...
         </template>
-      </div>
-      <div class="flex justify-center items-center py-6 bg-white w-full">
+      </client-only>
+      <div class="flex justify-center items-center py-6 bg-white w-full mt-auto">
         <FormKit
           v-model="list.name"
           :disabled="isListEmpty"
@@ -208,7 +213,7 @@ const handleSubmit = async() => {
     handleCleanFormItem()
     toast.success(`Item successfully ${typeSubmit}d`)
   }
-  catch (e) {
+  catch {
     toast.error(`Error while ${typeSubmit === 'update' ? 'updating' : 'creating'} item`)
   }
 }
@@ -234,7 +239,7 @@ const handleDeleteSelectedItem = async() => {
     tabSidebar.value = 'default'
     toast.success('Item successfully deleted')
   }
-  catch (e) {
+  catch {
     toast.error('Error in delete of item')
   }
 }

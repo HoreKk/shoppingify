@@ -6,6 +6,19 @@
   </main>
 </template>
 
+<script setup lang="ts">
+
+import { useSidebarStore } from './stores/sidebarStore'
+
+const sidebarStore = useSidebarStore()
+
+watch(() => sidebarStore, (state) => {
+  if (sidebarStore.list.items?.length)
+    localStorage.setItem('shoppingify-active-list', JSON.stringify(state.list))
+}, { deep: true })
+
+</script>
+
 <style>
 @import '@unocss/reset/tailwind.css';
 @import '~/styles/main.scss';

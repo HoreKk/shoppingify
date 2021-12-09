@@ -27,11 +27,16 @@
           @click.capture="sidebarStore.$patch({ selectedItem: item })"
         >
           <span>{{ item.name }}</span>
-          <button
-            :class="!isItemInList(item._id) ? 'i-mdi-add' : 'i-mdi-trash'"
-            class="text-disabled w-6 h-6 hover:text-primary"
-            @click="handleItemToList(item)"
-          />
+          <client-only>
+            <button
+              :class="!isItemInList(item._id) ? 'i-mdi-add' : 'i-mdi-trash'"
+              class="text-disabled w-6 h-6 hover:text-primary"
+              @click="handleItemToList(item)"
+            />
+            <!-- <template #placeholder>
+              <div class="i-mdi-square text-disabled animate-pulse" />
+            </template> -->
+          </client-only>
         </div>
       </div>
     </div>
@@ -57,7 +62,10 @@ const { data: itemsByCategories, refresh: refreshItems } = await useAsyncData(
 sidebarStore.$patch(state => state.refreshItems = refreshItems)
 
 const handleItemToList = async(item) => {
-  isItemInList(item._id) ? removeItemFromList(item) : await addItemToList(item)
+  if (isItemInList(item._id))
+    removeItemFromList(item)
+  else
+    addItemToList(item)
   sidebarStore.$patch({ selectedItem: null })
 }
 

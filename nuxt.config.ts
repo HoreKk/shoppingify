@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   },
   buildModules: [
     '@vueuse/core/nuxt',
-    '@pinia/nuxt',
+    ['@pinia/nuxt', { disabledVuex: true }],
     '@unocss/nuxt',
     'v-tooltip/nuxt',
   ],
