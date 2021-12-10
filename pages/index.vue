@@ -33,9 +33,9 @@
               class="text-disabled w-6 h-6 hover:text-primary"
               @click="handleItemToList(item)"
             />
-            <!-- <template #placeholder>
+            <template #fallback>
               <div class="i-mdi-square text-disabled animate-pulse" />
-            </template> -->
+            </template>
           </client-only>
         </div>
       </div>

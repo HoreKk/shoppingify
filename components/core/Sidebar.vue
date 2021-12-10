@@ -53,21 +53,21 @@
             </div>
           </template>
         </div>
+        <div class="flex justify-center items-center py-6 bg-white w-full mt-auto">
+          <FormKit
+            v-model="list.name"
+            :disabled="isListEmpty"
+            placeholder="Enter a name"
+            outer-class="!mb-0 -mr-6 w-4/6"
+            inner-class="!border-0 !py-2"
+            input-class="input-primary"
+          />
+          <FormkitButton text="Save" outer-class="!mb-0" input-class="btn btn-primary" :disabled="isListEmpty" />
+        </div>
         <template #fallback>
           Loading...
         </template>
       </client-only>
-      <div class="flex justify-center items-center py-6 bg-white w-full mt-auto">
-        <FormKit
-          v-model="list.name"
-          :disabled="isListEmpty"
-          placeholder="Enter a name"
-          outer-class="!mb-0 -mr-6 w-4/6"
-          inner-class="!border-0 !py-2"
-          input-class="input-primary"
-        />
-        <FormkitButton text="Save" outer-class="!mb-0" input-class="btn btn-primary" :disabled="isListEmpty" />
-      </div>
     </template>
     <template v-if="tabSidebar === 'newItem'">
       <h4 class="text-xl mt-10 mb-4">
