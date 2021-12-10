@@ -19,6 +19,7 @@ function PiniaPlugin({ store }: PiniaPluginContext) {
     state: 'view',
     items: <ItemList[]>[],
   })
+  listActive.value.items.forEach(item => item.edit = false)
   store.list = listActive.value
   store.$state.list = listActive.value
 }
