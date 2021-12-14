@@ -7,8 +7,8 @@
     "lint": "eslint \"**/*.{vue,ts,js}\""
   },
   "dependencies": {
-    "@formkit/themes": "^1.0.0-alpha.2",
-    "@formkit/vue": "^1.0.0-alpha.2",
+    "@formkit/themes": "^1.0.0-alpha.3",
+    "@formkit/vue": "^1.0.0-alpha.3",
     "click-outside-vue3": "^4.0.1",
     "dotenv": "^10.0.0",
     "mongoose": "^6.1.1",
@@ -28,10 +28,10 @@
     "bcrypt": "^5.0.1",
     "eslint": "^8.4.1",
     "njwt": "^1.2.0",
-    "nuxt3": "^3.0.0-27319101.3e82f0f",
+    "nuxt3": "^3.0.0-27324955.23397e6",
     "sass": "^1.45.0",
-    "typescript": "^4.5.3",
-    "unenv": "^0.4.2",
+    "typescript": "^4.5.4",
+    "unenv": "^0.4.3",
     "unocss": "^0.12.18",
     "vue-toastification": "^2.0.0-rc.5"
   },

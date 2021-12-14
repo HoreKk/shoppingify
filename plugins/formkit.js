@@ -1,5 +1,5 @@
 import { plugin, defaultConfig } from '@formkit/vue'
-import '@formkit/themes/dist/genesis/index.esm.css'
+import '@formkit/themes/genesis/theme.css'
 import { defineNuxtPlugin } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
