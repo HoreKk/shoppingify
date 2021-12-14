@@ -53,24 +53,24 @@
 <script setup lang="ts">
 
 import { useToast } from 'vue-toastification'
-import { useSidebarStore } from '~/stores/sidebarStore'
 import { storeToRefs } from 'pinia'
+import { useSidebarStore } from '~/stores/sidebarStore'
 
 const toast = useToast()
 const sidebarStore = useSidebarStore()
 const { selectedItem, refreshItems } = storeToRefs(sidebarStore)
 
 const props = defineProps({
-  formData: { type: Object, default: {}, required: true },
+  formData: { type: Object, required: true },
   newCategory: { type: String, default: '', required: true },
-  categories: { type: Object, default: {}, required: true },
+  categories: { type: Object, required: true },
 })
 
 const emit = defineEmits(['refreshCategories', 'handleCleanFormItem'])
 
 const { categories, newCategory } = toRefs(props)
-const { formData } = props
-const { name, note, image, category } = toRefs(formData)
+const { formData } = toRefs(props)
+const { name, note, image, category } = toRefs(formData.value)
 
 const tmpNewCategory = ref(newCategory.value)
 
@@ -89,7 +89,7 @@ const handleSubmit = async() => {
 
     category.value = categoryById._id
 
-    const itemFormated = await $fetch(`/api/item/${typeSubmit}`, { params: formData })
+    const itemFormated = await $fetch(`/api/item/${typeSubmit}`, { params: formData.value })
 
     if (itemFormated._id === selectedItem.value?._id)
       await sidebarStore.$patch(state => state.selectedItem = itemFormated)

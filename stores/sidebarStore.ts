@@ -12,7 +12,7 @@ export const useSidebarStore = defineStore('sidebar', {
     refreshItems: null,
     list: {
       name: null,
-      state: 'edit',
+      state: 'active',
       items: <ItemList[]>[],
     },
   }),
@@ -43,6 +43,7 @@ export const useSidebarStore = defineStore('sidebar', {
         return toast.error(`Item can't be removed to the ${this.list.name}`)
 
       this.list.items = this.list.items.filter(item => item._id !== deleteItem._id)
+      if (this.list.items.length === 0) this.list.name = null
       toast.success(`Item successfully removed from the ${this.list.name}`)
     },
     changePropertyFromItemInList(itemToChange: ItemList, property: string, action: string = undefined) {

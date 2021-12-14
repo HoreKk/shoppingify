@@ -33,9 +33,6 @@
               class="text-disabled w-6 h-6 hover:text-primary"
               @click="handleItemToList(item)"
             />
-            <template #fallback>
-              <div class="i-mdi-square text-disabled animate-pulse" />
-            </template>
           </client-only>
         </div>
       </div>
@@ -72,3 +69,15 @@ const handleItemToList = async(item) => {
 watch(searchItem, async() => await refreshItems())
 
 </script>
+
+<style lang="scss">
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s ease;
+}
+.fade-enter, .fade-leave-to
+/* .component-fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+</style>

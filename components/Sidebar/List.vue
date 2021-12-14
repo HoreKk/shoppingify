@@ -52,24 +52,32 @@
       </template>
     </div>
     <div class="flex justify-center items-center py-6 bg-white w-full mt-auto">
-      <FormKit
-        v-model="list.name"
-        :disabled="isListEmpty"
-        placeholder="Enter a name"
-        outer-class="!mb-0 -mr-6 w-4/6"
-        inner-class="!border-0 !py-2 !bg-transparent"
-        input-class="input-primary"
-      />
-      <FormkitButton text="Save" outer-class="!mb-0" input-class="btn btn-primary" :disabled="isListEmpty" />
+      <template v-if="!list._id">
+        <FormKit
+          v-model="list.name"
+          validation="required"
+          :disabled="isListEmpty"
+          placeholder="Enter a name"
+          outer-class="!mb-0 -mr-6 w-4/6"
+          inner-class="!border-0 !py-2 !bg-transparent"
+          input-class="input-primary"
+        />
+        <FormkitButton text="Save" outer-class="!mb-0" input-class="btn btn-primary" :handle-click="handleSaveList" :disabled="isListEmpty" />
+      </template>
+      <template v-else>
+        <FormkitButton text="cancel" input-class="btn" :handle-click="handleCancelList" />
+        <FormkitButton text="Complete" type="submit" outer-class="ml-4" input-class="btn btn-secondary" :handle-click="handleSubmit" />
+      </template>
     </div>
     <template #fallback>
-      Loading...
+      <div class="i-mdi-loading animate-spin m-auto" />
     </template>
   </client-only>
 </template>
 
 <script setup lang="ts">
 
+import type { PiniaCustomStateProperties } from 'pinia'
 import { storeToRefs } from 'pinia'
 import { useSidebarStore } from '~/stores/sidebarStore'
 
@@ -78,5 +86,16 @@ const emit = defineEmits(['hanleEditItem'])
 const sidebarStore = useSidebarStore()
 const { removeItemFromList, changePropertyFromItemInList } = sidebarStore
 const { getItemListByCats, list, isListEmpty } = storeToRefs(sidebarStore)
+
+const handleSaveList = async() => {
+  if (list.value.name) {
+    const createdList = await $fetch<PiniaCustomStateProperties['list']>('/api/list/create', { method: 'POST', body: list.value })
+    sidebarStore.$patch(state => state.list = createdList)
+  }
+}
+
+const handleCancelList = async() => {
+  const { _id } = list.value
+}
 
 </script>

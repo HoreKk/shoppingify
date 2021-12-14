@@ -9,11 +9,11 @@ enum Status {
   cancel = 'cancel',
 }
 
-interface IList extends Document {
+export interface IList extends Document {
   name: string
   state: Status
   items: [{
-    item_id: string
+    _id: string
     count: number
     checked: boolean
   }]
@@ -25,7 +25,7 @@ const ListSchema = new Schema({
   name: { type: String, required: true },
   state: { type: String, enum: ['active', 'complete', 'cancel'], default: Status.active, required: true },
   items: [{
-    item_id: { type: Schema.Types.ObjectId, required: true, ref: 'Item' },
+    _id: { type: Schema.Types.ObjectId, required: true, ref: 'Item' },
     count: { type: Number, required: true },
     checked: { type: Boolean, required: true },
   }],

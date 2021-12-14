@@ -25,6 +25,7 @@ export default defineNuxtConfig({
     attributify: true, // enabled `@unocss/preset-attributify`,
     shortcuts: [
       { 'btn-primary': '!bg-primary !text-white' },
+      { 'btn-secondary': '!bg-secondary !text-white' },
       { 'btn-white': '!bg-white' },
       { 'btn-disabled': '!bg-disabled' },
       { btn: '!font-semibold !border-transparent !rounded-xl !px-5 !py-4 disabled:!bg-disabled disabled:!text-white' },
