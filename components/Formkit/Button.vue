@@ -7,7 +7,7 @@
     @click="handleClick"
   >
     <div :class="icon" />
-    <span class="line-clamp-1">{{ text }}</span>
+    <span>{{ text }}</span>
   </FormKit>
 </template>
 

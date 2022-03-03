@@ -16,24 +16,24 @@ declare module 'pinia' {
 }
 
 async function PiniaPlugin({ store }: PiniaPluginContext) {
-  const list = await $fetch<PiniaCustomStateProperties['list']>('/api/list/list')
-  if (list) {
-    list.items = list.items.map(item => ({ ...item, ...item._id }))
-    store.list = list
-    store.$state.list = list
-    localStorage.removeItem('shoppingify-active-list')
-  }
-  else {
-    const listActive = useStorage('shoppingify-active-list', {
-      _id: null,
-      name: null,
-      state: 'active',
-      items: <ItemList[]>[],
-    })
-    listActive.value.items.forEach(item => item.edit = false)
-    store.list = listActive.value
-    store.$state.list = listActive.value
-  }
+  // const list = await $fetch<PiniaCustomStateProperties['list']>('/api/list/list')
+  // if (list) {
+  //   list.items = list.items.map(item => ({ ...item, ...item._id }))
+  //   store.list = list
+  //   store.$state.list = list
+  //   localStorage.removeItem('shoppingify-active-list')
+  // }
+  // else { 
+  // }
+  const listActive = useStorage('shoppingify-active-list', {
+    _id: null,
+    name: null,
+    state: 'active',
+    items: <ItemList[]>[],
+  })
+  listActive.value.items.forEach(item => item.edit = false)
+  store.list = listActive.value
+  store.$state.list = listActive.value
 }
 
 export default defineNuxtPlugin((nuxtApp) => {

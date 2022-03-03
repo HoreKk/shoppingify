@@ -22,4 +22,5 @@ watch(() => sidebarStore, (state) => {
 <style>
 @import '@unocss/reset/tailwind.css';
 @import '~/styles/main.scss';
+@import '@formkit/themes/genesis/theme.css';
 </style>

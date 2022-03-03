@@ -5,7 +5,7 @@
       <h4 class="text-white text-xl text-medium mb-3">
         Didn’t find what you need ?
       </h4>
-      <FormkitButton text="Add item" input-class="btn btn-white" :handle-click="() => emit('hanleEditItem')" />
+      <FormkitButton text="Add item" input-class="btn btn-white !text-black" :handle-click="() => emit('hanleEditItem')" />
     </div>
   </div>
   <client-only>
@@ -55,14 +55,13 @@
       <template v-if="!list._id">
         <FormKit
           v-model="list.name"
-          validation="required"
           :disabled="isListEmpty"
           placeholder="Enter a name"
           outer-class="!mb-0 -mr-6 w-4/6"
-          inner-class="!border-0 !py-2 !bg-transparent"
+          inner-class="!border-0 !shadow-none !py-2 !bg-transparent"
           input-class="input-primary"
         />
-        <FormkitButton text="Save" outer-class="!mb-0" input-class="btn btn-primary" :handle-click="handleSaveList" :disabled="isListEmpty" />
+        <FormkitButton text="Save" outer-class="!mb-0 !ml-2" input-class="btn btn-primary" :handle-click="handleSaveList" :disabled="isListEmpty" />
       </template>
       <template v-else>
         <FormkitButton text="cancel" input-class="btn" :handle-click="handleCancelList" />
@@ -88,10 +87,10 @@ const { removeItemFromList, changePropertyFromItemInList } = sidebarStore
 const { getItemListByCats, list, isListEmpty } = storeToRefs(sidebarStore)
 
 const handleSaveList = async() => {
-  if (list.value.name) {
-    const createdList = await $fetch<PiniaCustomStateProperties['list']>('/api/list/create', { method: 'POST', body: list.value })
-    sidebarStore.$patch(state => state.list = createdList)
-  }
+  // if (list.value.name) {
+  //   const createdList = await $fetch<PiniaCustomStateProperties['list']>('/api/list/create', { method: 'POST', body: list.value })
+  //   sidebarStore.$patch(state => state.list = createdList)
+  // }
 }
 
 const handleCancelList = async() => {
