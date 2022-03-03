@@ -66,7 +66,7 @@
       </template>
       <template v-else>
         <FormkitButton text="cancel" input-class="btn" :handle-click="handleCancelList" />
-        <FormkitButton text="Complete" type="submit" outer-class="ml-4" input-class="btn btn-secondary" :handle-click="handleSubmit" />
+        <FormkitButton text="Complete" type="submit" outer-class="ml-4" input-class="btn btn-secondary" />
       </template>
     </div>
     <template #fallback>

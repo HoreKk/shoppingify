@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     '@vueuse/core/nuxt',
     ['@pinia/nuxt', { disabledVuex: true }],
     '@unocss/nuxt',
+    '@formkit/nuxt',
     'v-tooltip/nuxt',
   ],
   privateRuntimeConfig: {

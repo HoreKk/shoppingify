@@ -6,15 +6,15 @@
     />
     <SidebarEditItem
       v-if="tabSidebar === 'newItem'"
-      :formData="formData"
-      :newCategory="newCategory"
+      :form-data="formData"
+      :new-category="newCategory"
       :categories="categories"
       @refreshCategories="refreshCategories"
       @handleCleanFormItem="handleCleanFormItem"
     />
     <SidebarViewItem
       v-if="tabSidebar === 'selectedItem'"
-      :tabSidebar="tabSidebar"
+      :tab-sidebar="tabSidebar"
       @hanleEditItem="hanleEditItem"
     />
   </div>
